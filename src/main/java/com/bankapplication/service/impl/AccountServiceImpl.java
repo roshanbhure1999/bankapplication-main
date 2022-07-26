@@ -8,7 +8,9 @@ import com.bankapplication.repository.BankRepository;
 import com.bankapplication.repository.CustomerRepository;
 import com.bankapplication.repository.TransactionRepository;
 import com.bankapplication.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,18 +18,19 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Service
 public class AccountServiceImpl implements AccountService {
-    @Autowired
-    private BankRepository bankRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private CustomerRepository customerRepository;
 
-    @Autowired
-    private TransactionRepository  transactionRepository;
+    private final BankRepository bankRepository;
 
+    private final AccountRepository accountRepository;
+
+    private final CustomerRepository customerRepository;
+
+    private final TransactionRepository transactionRepository;
 
 
     @Override
@@ -62,13 +65,13 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountType(accountDto.getAccountType());
         account.setAmount(accountDto.getAmount());
         Bank bank = bankRepository.findById(accountDto.getBankId()).orElse(null);
-        if (bank==null){
-            throw new UserException("The bank id is invalid for this given id "+accountDto.getBankId(), HttpStatus.BAD_REQUEST);
+        if (bank == null) {
+            throw new UserException("The bank id is invalid for this given id " + accountDto.getBankId(), HttpStatus.BAD_REQUEST);
         }
         account.setBank(bank);
         Customer customer = customerRepository.findById(accountDto.getCustomerId()).orElse(null);
-        if (customer==null){
-            throw new UserException("The customer id is invalid for this given id "+accountDto.getCustomerId(), HttpStatus.BAD_REQUEST);
+        if (customer == null) {
+            throw new UserException("The customer id is invalid for this given id " + accountDto.getCustomerId(), HttpStatus.BAD_REQUEST);
         }
         account.setCustomer(customer);
         return account;
@@ -77,25 +80,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account getAccount(long id) {
         Account account = accountRepository.findById(id).orElse(null);
-        if (account== null){
-            new UserException("The account id is invalid for this given id "+id,HttpStatus.BAD_REQUEST);
+        if (account == null) {
+            new UserException("The account id is invalid for this given id " + id, HttpStatus.BAD_REQUEST);
         }
         return account;
 
     }
 
     @Override
-    @Scheduled (cron = "* 2 * * * *")
+    @Scheduled(cron = "* 2 * * * *")
     public void transaction() {
         List<Account> accounts = accountRepository.findAll();
-        for(Account  account: accounts){
-            Transaction  transaction=new Transaction();
+        for (Account account : accounts) {
+            Transaction transaction = new Transaction();
             double amount = account.getAmount();
-            double totalAmount=(amount*0.5)+amount;
+            double totalAmount = (amount * 0.5) + amount;
             account.setAmount(totalAmount);
             accountRepository.save(account);
             transaction.setName("From bank");
-            transaction.setAccountType(SavingOrCurrent.CURRENT );
+            transaction.setAccountType(SavingOrCurrent.CURRENT);
             transaction.setAccountTo(account.getAccountNumber());
             transaction.setAccountFrom("Bank");
             transaction.setDate(LocalDate.now());

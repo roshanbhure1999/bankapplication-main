@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class AccountDto implements Serializable {
     private long accId;
     @NotEmpty(message = "amount.required ")
-    @Size(min = 14,max = 14, message = "password must be 14 digit ")
+    @Size(min = 14, max = 14, message = "password must be 14 digit ")
     private String accountNumber;
     @NotEmpty(message = "accountType.required ")
     private SavingOrCurrent accountType;
@@ -21,6 +21,6 @@ public class AccountDto implements Serializable {
     private long customerId;
     @NotEmpty(message = "bankId.required ")
     private long bankId;
-    @Size(min = 12,max = 12, message = "ifscCode must be 12 digit ")
+    @Size(min = 12, max = 12, message = "ifscCode must be 12 digit ")
     private String ifscCode;
 }

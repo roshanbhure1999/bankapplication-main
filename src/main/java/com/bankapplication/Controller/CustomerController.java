@@ -4,7 +4,9 @@ import com.bankapplication.dto.CustomerDto;
 import com.bankapplication.dto.TransactionDTO;
 import com.bankapplication.entity.Account;
 import com.bankapplication.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/customer")
 public class CustomerController {
-    @Autowired
-    private CustomerService customerService;
+
+    private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<String> addCustomer(@Valid  @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDto customerDto) {
         String s = customerService.addCustomer(customerDto);
         return new ResponseEntity<String>(s, HttpStatus.CREATED);
     }
@@ -33,13 +38,13 @@ public class CustomerController {
     @GetMapping(path = "/get-balance/{account-number}")
     public ResponseEntity<String> getBalance(@PathVariable("account-number") String accountNumber) {
         String balance = customerService.getBalance(accountNumber);
-        return new ResponseEntity<>(balance,HttpStatus.CREATED);
+        return new ResponseEntity<>(balance, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/transfer")
-    public ResponseEntity<String>  transferMoney(@RequestBody TransactionDTO transferDTO){
+    public ResponseEntity<String> transferMoney(@RequestBody TransactionDTO transferDTO) {
         String s = customerService.transferMoney(transferDTO);
-        return new ResponseEntity<>(s,HttpStatus.CREATED);
+        return new ResponseEntity<>(s, HttpStatus.CREATED);
     }
 
 }

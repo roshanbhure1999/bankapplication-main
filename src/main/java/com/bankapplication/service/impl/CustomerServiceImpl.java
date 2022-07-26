@@ -11,6 +11,9 @@ import com.bankapplication.repository.AccountRepository;
 import com.bankapplication.repository.CustomerRepository;
 import com.bankapplication.repository.TransactionRepository;
 import com.bankapplication.service.CustomerService;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,15 +21,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Service
 public class CustomerServiceImpl implements CustomerService {
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
+
+    private final CustomerRepository customerRepository;
+
+    private final AccountRepository accountRepository;
+
+    private final TransactionRepository transactionRepository;
     @Override
     public String addCustomer(CustomerDto customerDto) {
         String aadharNumber = customerDto.getAadharNumber();
@@ -59,7 +64,6 @@ public class CustomerServiceImpl implements CustomerService {
             throw new UserException("The No any account present for this given customer id " + customerId, HttpStatus.BAD_REQUEST);
         }
         return accounts;
-
     }
 
     @Override

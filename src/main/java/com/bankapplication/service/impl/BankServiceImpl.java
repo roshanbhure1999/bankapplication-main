@@ -4,19 +4,24 @@ import com.bankapplication.dto.BankDto;
 import com.bankapplication.entity.Bank;
 import com.bankapplication.repository.BankRepository;
 import com.bankapplication.service.BankService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Service
 public class BankServiceImpl implements BankService {
-    @Autowired
-    private BankRepository bankRepository;
+
+    private final BankRepository bankRepository;
 
     @Override
     public String addBank(BankDto bankdto) {
         /*Bank byIfscCode = bankRepository.findBYIfscCode(bankdto.getIfscCode());*/
-        if (bankdto.getIfscCode().length()!=11) {
-           return "invalid IFSCCode";
+        if (bankdto.getIfscCode().length() != 11) {
+            return "invalid IFSCCode";
         }
         bankRepository.save(dtoToEntity(bankdto));
         return " Done";
