@@ -165,7 +165,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
 
-    @Scheduled(cron = "0 0/10 * * * *") // Once in 10 mins
+  //  @Scheduled(cron = "0 0/2 * * * *") // Once in 10 mins
     //@Scheduled(cron = "0 0 0 * * *") //once in day
 
     public void transaction() {
@@ -174,14 +174,15 @@ public class AccountServiceImpl implements AccountService {
             log.debug("Processing interest for account :: " + account.getAccountId());
             Transaction transaction = new Transaction();
             double amount = account.getAmount();
-            double totalAmount = (amount * AccountBalance.Interest.getBalance()) + amount;
-            Double interest = ((amount *AccountBalance.Interest.getBalance()) / AccountBalance.Total.getBalance());
+            double interest = amount * AccountBalance.Interest.getBalance() / AccountBalance.Total.getBalance();
+            double totalAmount = (interest) + amount;
             account.setAmount(totalAmount);
             accountRepository.save(account);
             transaction.setName("From bank");
             transaction.setAccountType(SavingOrCurrent.CURRENT);
             transaction.setAccountTo(account.getAccountNumber());
             transaction.setAccountFrom("Bank");
+            transaction.setAmount(totalAmount);
             transaction.setDate(LocalDate.now());
             transaction.setIfscCode(account.getIfscCode());
             log.debug("existingBalance :: " + amount + "\tinterest :: " + interest + "\tnewValue :: " + totalAmount);
