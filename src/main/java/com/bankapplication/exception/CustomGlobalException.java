@@ -28,8 +28,8 @@ public class CustomGlobalException {
 
     }
 
-    @ExceptionHandler(value = {UserException.class})
-    protected ResponseEntity<?> handleException(UserException ux, WebRequest request) {
+    @ExceptionHandler(value = {BankException.class})
+    protected ResponseEntity<?> handleException(BankException ux, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", ux.getHttpStatus().value());

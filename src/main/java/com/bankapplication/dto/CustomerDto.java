@@ -1,35 +1,36 @@
 package com.bankapplication.dto;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 public class CustomerDto {
 
-    private long cId;
-    @NotEmpty(message = "name.required ")
+    @NotBlank(message = "name.required ")
     private String name;
-    @NotEmpty(message = "mobileNumber.required ")
-    @Size(min = 10, max = 10, message = "password must be 10 digit ")
+    @NotNull(message = "Mobile number is required")
+    @Pattern(regexp = "[\\d]{10}", message = "Mobile number should 10 digit only")
     private String mobileNumber;
-    @NotEmpty(message = "address.required ")
+    @NotBlank(message = "address.required ")
     private String address;
-    @NotEmpty(message = "city.required ")
+    @NotBlank(message = "city.required ")
     private String city;
-    @NotEmpty(message = "state.required ")
+    @NotBlank(message = "state.required ")
     private String state;
-    @NotEmpty(message = "country.required ")
+    @NotBlank(message = "country.required ")
     private String country;
-    @NotEmpty(message = "zipcode.required ")
-    @Size(min = 10, max = 10, message = "password must be 10 digit ")
+    @NotNull(message = "zipcode is required")
+    @Pattern(regexp = "[\\d]{6}", message = "zipcode should 6 digit only")
     private String zipcode;
-    @NotEmpty(message = "aadharNumber.required ")
-    @Size(min = 12, max = 12, message = "password must be 12 digit ")
+    @NotNull(message = "Aadhar number is required")
+    @Pattern(regexp = "[\\d]{12}", message = "aadharNumber should 12 digit only")
     private String aadharNumber;
-    @NotEmpty(message = "amount.required ")
-    @Size(min = 10, max = 10, message = "password must be 10 digit ")
+    @NotBlank(message = "PAN number is required")
+    @Length(min = 10, max = 10, message = "panNumber should 10 digit only")
     private String panNumber;
 
 }

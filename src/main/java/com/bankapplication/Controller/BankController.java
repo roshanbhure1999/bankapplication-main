@@ -23,6 +23,12 @@ public class BankController {
 
     private final BankService bankService;
 
+    /**
+     *
+     * @param bankDto
+     * @return
+
+     */
     @PostMapping
     public ResponseEntity<String> saveBank(@Valid @RequestBody BankDto bankDto) {
         String s = bankService.addBank(bankDto);

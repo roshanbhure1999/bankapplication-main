@@ -1,5 +1,6 @@
 package com.bankapplication.entity;
 
+import com.bankapplication.constant.SavingOrCurrent;
 import lombok.Data;
 
 import javax.persistence.*;

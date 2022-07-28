@@ -5,5 +5,5 @@ import com.bankapplication.dto.TransactionDTO;
 import java.util.List;
 
 public interface TransactionService {
-    List<TransactionDTO> sevenDayTransaction();
+    List<TransactionDTO> sevenDayTransaction(long numberOfDays);
 }

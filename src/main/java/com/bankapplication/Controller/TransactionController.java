@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,10 +22,10 @@ public class TransactionController {
 
     private final TransactionService transferService;
 
-    @GetMapping("/sevenDayTransaction")
+    @GetMapping("/sevenDayTransaction/{numberOfDays}")
 
-    public ResponseEntity<List<TransactionDTO>> sevenDayTransaction() {
-        List<TransactionDTO> transaction = transferService.sevenDayTransaction();
+    public ResponseEntity<List<TransactionDTO>> sevenDayTransaction(@PathVariable int numberOfDays) {
+        List<TransactionDTO> transaction = transferService.sevenDayTransaction(numberOfDays);
         return new ResponseEntity<>(transaction, HttpStatus.CREATED);
     }
 }

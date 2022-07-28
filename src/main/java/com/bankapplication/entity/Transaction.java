@@ -1,5 +1,6 @@
 package com.bankapplication.entity;
 
+import com.bankapplication.constant.SavingOrCurrent;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Transaction {
     private String accountTo;
     private SavingOrCurrent accountType;
     private String ifscCode;
+    private double amount;
     private String name;
     private LocalDate date;
 
