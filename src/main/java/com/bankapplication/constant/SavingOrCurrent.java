@@ -1,5 +1,5 @@
 package com.bankapplication.constant;
 
-public enum SavingOrCurrent {
+public enum   SavingOrCurrent {
     SAVING, CURRENT
 }

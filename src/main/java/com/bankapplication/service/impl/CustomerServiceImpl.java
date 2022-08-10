@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -45,18 +46,18 @@ public class CustomerServiceImpl implements CustomerService {
         Customer byPanNumberOrAadharNumber = customerRepository.findByPanNumberOrAadharNumber(Optional.ofNullable(customerDto.getPanNumber()), (Optional.ofNullable(customerDto.getAadharNumber())));
         if (byPanNumberOrAadharNumber != null) {
             log.error("The Customer Already Save otherWise you can change the Aadhar number and pan number::{}",customerDto.getPanNumber()+"/+"+customerDto.getAadharNumber());
-            return "PanNumberOrAadharNumber is not unique";
+            throw new BankException("Not allowed to update Aadhar number And Pan Number", HttpStatus.BAD_REQUEST);
         }
         if (customerDto.getMobileNumber().length() != 10) {
             log.error("Invalid Mobile Number plz enter 10 digit::{}",customerDto.getMobileNumber());
-            return "mobile number must be 10 digit";
+            throw new BankException("The mobile number must be 10 digit", HttpStatus.BAD_REQUEST);
         }
         if (aadharNumber.length() == 12 && panNumber.length() == 10) {
             customerRepository.save(dtoToEntity(customerDto));
             log.debug("Customer Saves Successfully");
             return "Done";
         }
-        return "Invalid aadharNumber/PanNumber";
+        throw new BankException("Customer should have unique Adhar/Pan Number.", HttpStatus.BAD_REQUEST);
     }
 
     private Customer dtoToEntity(CustomerDto customerDto) {
@@ -70,7 +71,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<Account> accounts = accountRepository.findByCustomer(customerRepository.findById(customerId).get());
         if (accounts.isEmpty()) {
-
             log.error("the customer is not found for this given id ::{}",customerId);
             throw new BankException("The No any account present for this given customer id " + customerId, HttpStatus.BAD_REQUEST);
         }
@@ -84,7 +84,7 @@ public class CustomerServiceImpl implements CustomerService {
         Account account = AccountNumber.get();
         if (Objects.isNull(AccountNumber)){
             log.error("Account  Does  not Exist with id ::{}",accountNumber);
-            return "No Account found  for this given account number "+accountNumber;
+            throw new BankException("Account  Does  not Exist with id ::{}"+accountNumber, HttpStatus.NO_CONTENT);
         }
         log.debug("The account balance for this given account number is "+accountNumber+" the balance is "+account.getAccountNumber()  );
         return "This Account Number " + account.getAccountNumber() + " have type " + account.getAccountType().name() + " Account  and available balance is " + account.getAmount();
@@ -162,6 +162,74 @@ public class CustomerServiceImpl implements CustomerService {
         return "SUCCESS.\nAfter transfer From Ac balance :: " + fromAc.getAmount() + "\t To Account balance :: " + toAc.getAmount();
     }
 
+    @Override
+    public CustomerDto findById(Long id) {
+        Customer result = customerRepository.findById(id).orElseThrow(()-> new BankException("Not found", HttpStatus.NO_CONTENT));
 
+            CustomerDto customerDto=new CustomerDto();
+            BeanUtils.copyProperties(result,customerDto);
+            customerDto.setId(result.getCId());
+            return customerDto;
+
+
+    }
+
+    @Override
+    public List<CustomerDto> findAll() {
+        List<CustomerDto> customer = customerRepository.findAll().stream().map(this::toCustomerDTO).collect(Collectors.toList());
+        if (!customer.isEmpty()) {
+            return customer;
+        } else throw new BankException("", HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public String deleteById(long id) {
+        List<Account> listOfAccount = accountRepository.findByCustomer(customerRepository.findById(id).get());
+        if (!listOfAccount.isEmpty()){
+            throw new BankException("first you need to close the account ",HttpStatus.BAD_REQUEST);
+        }
+        customerRepository.deleteById(id);
+        return "The customer delete successfully for this given id "+id;
+    }
+
+    @Override
+    public List<CustomerDto> search(String key) {
+        List<CustomerDto> customer = customerRepository.findByTitleContent("%" + key + "%").stream().map(this::toCustomerDTO).collect(Collectors.toList());
+        if (!customer.isEmpty()) {
+            return customer;
+        } else throw new BankException("", HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public String updateCustomer(CustomerDto customerDto) {
+        Optional<Customer> customer = customerRepository.findById(customerDto.getId());
+        if (!customer.isPresent()) {
+            log.error("No Customer exist for account number:: {}", customerDto.getId());
+            throw new BankException("No Customer exist for Customer number :: " + customerDto.getId(), HttpStatus.NOT_FOUND);
+        }
+        if (customerDto.getAadharNumber().length() != 12 && customerDto.getPanNumber().length() != 10&&customerDto.getMobileNumber().length() != 10) {
+
+            throw new BankException("Customer should have  Adhar(12)/Pan Number(10)/mobile number(10)", HttpStatus.NOT_FOUND);
+
+        }
+
+        Customer customer2 = customer.get();
+        customer2.setName(customerDto.getName());
+        customer2.setAddress(customerDto.getAddress());
+        customer2.setCity(customerDto.getCity());
+        customer2.setCountry(customerDto.getCountry());
+        customer2.setMobileNumber(customerDto.getMobileNumber());
+        customer2.setZipcode(customerDto.getZipcode());
+        customer2.setState(customerDto.getState());
+        customerRepository.save(customer2);
+        return "the customer update  successfully";
+    }
+
+    private CustomerDto toCustomerDTO(Customer customer) {
+        CustomerDto customerDto = new CustomerDto();
+        BeanUtils.copyProperties(customer, customerDto);
+        customerDto.setId(customer.getCId());
+        return customerDto;
+    }
 
 }

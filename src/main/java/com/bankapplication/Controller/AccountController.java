@@ -1,6 +1,8 @@
 package com.bankapplication.Controller;
 
+import com.bankapplication.constantUrl.Url;
 import com.bankapplication.dto.AccountDto;
+import com.bankapplication.dto.CustomerDto;
 import com.bankapplication.entity.Account;
 import com.bankapplication.service.AccountService;
 import lombok.Getter;
@@ -11,12 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(path = "/account")
+@RequestMapping(path = Url.ACCOUNT)
 public class AccountController {
     private final AccountService accountService;
 
@@ -34,19 +37,44 @@ public class AccountController {
         return new ResponseEntity<String>(s, HttpStatus.CREATED);
     }
 
-    /**
-     *
-     * @param accId
-     * @return
-     * @apiNote This Api create for find by account number
-     *      if the account number is  not valid then throw the exception
-     *
-     * @exceptionThe account id is invalid for this given id  HttpStatus.BAD_REQUEST
-     */
-    @GetMapping(path = "/{accId}")
-    public ResponseEntity<Account> getAmount(@PathVariable("accountId") long accId) {
-        Account account = accountService.getAccount(accId);
+    @GetMapping(path = Url.Id)
+    public ResponseEntity<Account> getAmount(@PathVariable("id") long id) {
+        Account account = accountService.getAccount(id);
         return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<List<AccountDto>> listAllAccounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
+    }
+
+    @GetMapping(Url.ACCOUNT_NUMBER)
+    public ResponseEntity<AccountDto> findByAccountNumber(@PathVariable("accountNumber") String accountNumber) {
+        return ResponseEntity.ok(accountService.findByAccountNumber(accountNumber));
+    }
+
+    @GetMapping(Url.LIKE)
+    public ResponseEntity<List<AccountDto>> search(@PathVariable String content){
+        return ResponseEntity.ok(accountService.search(content));
+
+    }
+
+    @GetMapping("searchBlockAccount/{content}")
+    public ResponseEntity<List<AccountDto>> searchBlockAccount(@PathVariable int content){
+        return ResponseEntity.ok(accountService.searchBlockAccount(content));
+
+    }
+    @DeleteMapping(Url.Id)
+    public ResponseEntity<String> deleteById(@PathVariable long id){
+        return ResponseEntity.ok(accountService.deleteById(id));
+    }
+
+    @PutMapping(Url.UPDATE)
+    public ResponseEntity<String> updateAccount(@Valid @RequestBody AccountDto accountDto) {
+        String s = accountService.updateAccount(accountDto);
+        return new ResponseEntity<String>(s, HttpStatus.OK);
+    }
+
+
 
 }

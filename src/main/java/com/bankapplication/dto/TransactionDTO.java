@@ -12,6 +12,7 @@ import java.time.LocalTime;
 
 @Data
 public class TransactionDTO {
+    private long id;
     @NotNull(message = "From Account can not be empty")
     @Size(min = 14, max = 14, message = "password must be 14 digit ")
     private String accountNumberFrom;

@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class CustomerDto {
-
+    private long id;
     @NotBlank(message = "name.required ")
     private String name;
     @NotNull(message = "Mobile number is required")
