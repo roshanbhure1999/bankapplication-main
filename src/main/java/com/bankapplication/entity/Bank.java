@@ -38,4 +38,5 @@ public class Bank implements Serializable {
     @Column(name = "zipcode")
     private String zipcode;
 
+
 }

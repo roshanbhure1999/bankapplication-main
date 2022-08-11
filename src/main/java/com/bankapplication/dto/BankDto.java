@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 public class BankDto {
 
-
+    private long id;
     @NotEmpty(message = "bankName.required ")
     private String bankName;
     @Length(min = 11, max = 11, message = "ifscCode must be 14 digit ")
