@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    Customer findByPanNumberOrAadharNumber(Optional<String> panNumber, Optional<String> aadharNumber);
+    Customer findByPanNumberOrAadharNumber(String panNumber, String aadharNumber);
 
     @Query(value = "select * from customer  where c_id like :key or aadhar_number like :key or address like :key or" +
             " city like :key or country like :key or mobile_number like :key or name like :key" +

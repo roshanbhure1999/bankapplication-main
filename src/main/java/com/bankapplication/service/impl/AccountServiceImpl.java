@@ -189,18 +189,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountDto> search(String content) {
         List<AccountDto> account = accountRepository.findByTitleContent("%" + content + "%").stream().map(this::toAccountDTO).collect(Collectors.toList());
-        if (!account.isEmpty()) {
+        List<AccountDto> accountDto = Optional.of(account).orElseThrow(() -> new BankException("", HttpStatus.NO_CONTENT));
             return account;
-        } else throw new BankException("", HttpStatus.NO_CONTENT);
     }
 
     @Override
     public List<AccountDto> searchBlockAccount(int content) {
         List<AccountDto> account = accountRepository.findByTitleContents(content).stream().map(this::toAccountDTO).collect(Collectors.toList());
-        if (!account.isEmpty()) {
-            return account;
-        } else throw new BankException("", HttpStatus.NO_CONTENT);
-
+        List<AccountDto> accountDto = Optional.ofNullable(account).orElseThrow(() -> new BankException("", HttpStatus.NO_CONTENT));
+        return account;
     }
 
     @Override

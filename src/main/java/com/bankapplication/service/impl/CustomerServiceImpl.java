@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     public String addCustomer(CustomerDto customerDto) {
         String aadharNumber = customerDto.getAadharNumber();
         String panNumber = customerDto.getPanNumber();
-        Customer byPanNumberOrAadharNumber = customerRepository.findByPanNumberOrAadharNumber(Optional.ofNullable(customerDto.getPanNumber()), (Optional.ofNullable(customerDto.getAadharNumber())));
+        Customer byPanNumberOrAadharNumber = customerRepository.findByPanNumberOrAadharNumber(customerDto.getPanNumber(),customerDto.getAadharNumber());
         if (byPanNumberOrAadharNumber != null) {
             log.error("The Customer Already Save otherWise you can change the Aadhar number and pan number::{}",customerDto.getPanNumber()+"/+"+customerDto.getAadharNumber());
             throw new BankException("Not allowed to update Aadhar number And Pan Number", HttpStatus.BAD_REQUEST);
@@ -177,6 +177,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDto> findAll() {
         List<CustomerDto> customer = customerRepository.findAll().stream().map(this::toCustomerDTO).collect(Collectors.toList());
+
         if (!customer.isEmpty()) {
             return customer;
         } else throw new BankException("", HttpStatus.NO_CONTENT);
@@ -184,12 +185,13 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public String deleteById(long id) {
-        List<Account> listOfAccount = accountRepository.findByCustomer(customerRepository.findById(id).get());
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new BankException("first you need to close the account ", HttpStatus.BAD_REQUEST));
+        List<Account> listOfAccount = accountRepository.findByCustomer(customer);
         if (!listOfAccount.isEmpty()){
             throw new BankException("first you need to close the account ",HttpStatus.BAD_REQUEST);
         }
         customerRepository.deleteById(id);
-        return "The customer delete successfully for this given id "+id;
+        return String.format("The customer delete successfully for this given id %d", id);
     }
 
     @Override
