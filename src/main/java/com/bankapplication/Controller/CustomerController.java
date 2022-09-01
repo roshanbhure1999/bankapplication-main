@@ -29,11 +29,11 @@ public class CustomerController {
         String s = customerService.addCustomer(customerDto);
         return new ResponseEntity<String>(s, HttpStatus.CREATED);
     }
-    @GetMapping(Url.Id)
+    @GetMapping(Url.ID)
     public ResponseEntity<CustomerDto> findCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.findById(id));
     }
-    @GetMapping(path = Url.CUSTOMER+Url.Id)
+    @GetMapping(path = Url.CUSTOMER+Url.ID)
     public ResponseEntity<List<Account>> getAccounts(@PathVariable("id") long id) {
         List<Account> accounts = customerService.getAccounts(id);
         return new ResponseEntity<List<Account>>(accounts, HttpStatus.CREATED);
@@ -56,7 +56,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.findAll());
     }
 
-    @DeleteMapping(Url.Id)
+    @DeleteMapping(Url.ID)
     public ResponseEntity<String> deleteById(@PathVariable long id){
         return ResponseEntity.ok(customerService.deleteById(id));
     }

@@ -4,6 +4,8 @@ import com.bankapplication.constant.SavingOrCurrent;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,7 @@ public class TransactionDTO {
     private String ifscCode;
     @NotBlank(message = "name.required ")
     private String name;
+    @Enumerated(EnumType.STRING)
     @NotEmpty(message = "accountType.required ")
     private SavingOrCurrent accountType;
     @NotEmpty(message = "date.required ")

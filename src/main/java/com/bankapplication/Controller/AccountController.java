@@ -2,7 +2,6 @@ package com.bankapplication.Controller;
 
 import com.bankapplication.constantUrl.Url;
 import com.bankapplication.dto.AccountDto;
-import com.bankapplication.dto.CustomerDto;
 import com.bankapplication.entity.Account;
 import com.bankapplication.service.AccountService;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = Url.ACCOUNT)
+@Validated
 public class AccountController {
     private final AccountService accountService;
 
@@ -32,12 +33,12 @@ public class AccountController {
      * @serialData
      */
     @PostMapping
-    public ResponseEntity<String> createAccount(@Valid @RequestBody AccountDto accountDto) {
+    public ResponseEntity<String> createAccount(@RequestBody @Valid  AccountDto accountDto) {
         String s = accountService.addAccount(accountDto);
         return new ResponseEntity<String>(s, HttpStatus.CREATED);
     }
 
-    @GetMapping(path = Url.Id)
+    @GetMapping(path = Url.ID)
     public ResponseEntity<Account> getAmount(@PathVariable("id") long id) {
         Account account = accountService.getAccount(id);
         return new ResponseEntity<Account>(account, HttpStatus.OK);
@@ -58,13 +59,11 @@ public class AccountController {
         return ResponseEntity.ok(accountService.search(content));
 
     }
-
     @GetMapping("searchBlockAccount/{content}")
     public ResponseEntity<List<AccountDto>> searchBlockAccount(@PathVariable int content){
         return ResponseEntity.ok(accountService.searchBlockAccount(content));
-
     }
-    @DeleteMapping(Url.Id)
+    @DeleteMapping(Url.ID)
     public ResponseEntity<String> deleteById(@PathVariable long id){
         return ResponseEntity.ok(accountService.deleteById(id));
     }
@@ -74,7 +73,5 @@ public class AccountController {
         String s = accountService.updateAccount(accountDto);
         return new ResponseEntity<String>(s, HttpStatus.OK);
     }
-
-
 
 }

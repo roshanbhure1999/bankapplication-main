@@ -16,6 +16,7 @@ public class Transaction {
     private Long id;
     private String accountFrom;
     private String accountTo;
+    @Enumerated(EnumType.STRING)
     private SavingOrCurrent accountType;
     private String ifscCode;
     private double amount;

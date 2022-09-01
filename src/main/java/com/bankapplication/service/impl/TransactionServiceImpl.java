@@ -2,9 +2,10 @@ package com.bankapplication.service.impl;
 
 import com.bankapplication.dto.TransactionDTO;
 import com.bankapplication.entity.Transaction;
-import com.bankapplication.exception.BankException;
+
 import com.bankapplication.repository.TransactionRepository;
 import com.bankapplication.service.TransactionService;
+import com.commonexception.exception.BankException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

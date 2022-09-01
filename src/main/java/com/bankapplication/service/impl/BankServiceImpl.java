@@ -4,10 +4,11 @@ import com.bankapplication.dto.AccountDto;
 import com.bankapplication.dto.BankDto;
 import com.bankapplication.entity.Account;
 import com.bankapplication.entity.Bank;
-import com.bankapplication.exception.BankException;
+
 import com.bankapplication.repository.AccountRepository;
 import com.bankapplication.repository.BankRepository;
 import com.bankapplication.service.BankService;
+import com.commonexception.exception.BankException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

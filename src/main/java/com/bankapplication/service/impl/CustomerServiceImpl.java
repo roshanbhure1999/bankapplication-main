@@ -7,11 +7,12 @@ import com.bankapplication.entity.Account;
 import com.bankapplication.entity.Customer;
 import com.bankapplication.constant.SavingOrCurrent;
 import com.bankapplication.entity.Transaction;
-import com.bankapplication.exception.BankException;
+
 import com.bankapplication.repository.AccountRepository;
 import com.bankapplication.repository.CustomerRepository;
 import com.bankapplication.repository.TransactionRepository;
 import com.bankapplication.service.CustomerService;
+import com.commonexception.exception.BankException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -164,7 +165,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDto findById(Long id) {
-        Customer result = customerRepository.findById(id).orElseThrow(()-> new BankException("Not found", HttpStatus.NO_CONTENT));
+        Optional<Customer> byId = customerRepository.findById(id);
+        Customer result= byId.orElseThrow(()-> new BankException("Not found", HttpStatus.NO_CONTENT));
 
             CustomerDto customerDto=new CustomerDto();
             BeanUtils.copyProperties(result,customerDto);

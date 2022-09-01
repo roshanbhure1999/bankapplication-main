@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface BankRepository extends JpaRepository<Bank, Long> {
 
-          Bank findByIfscCode(String ifscCode);
+            Bank findByIfscCode(String ifscCode);
 
     @Query(value = "select * from bank  where b_id like :key or address like :key or bank_name like :key or" +
             " branch_name like :key or country like :key or city like :key or ifsc_code like :key" +

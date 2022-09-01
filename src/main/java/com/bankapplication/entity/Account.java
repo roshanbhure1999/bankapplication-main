@@ -4,6 +4,7 @@ import com.bankapplication.constant.SavingOrCurrent;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
@@ -28,6 +29,7 @@ public class Account implements Serializable {
     @Column(name = "amount")
     private double amount;
 
+    @NotBlank(message = "isfc code is blank")
     private String ifscCode;
 
     @ManyToOne(cascade = CascadeType.ALL)

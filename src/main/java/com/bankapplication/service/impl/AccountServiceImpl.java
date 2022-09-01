@@ -7,12 +7,13 @@ import com.bankapplication.entity.Account;
 import com.bankapplication.entity.Bank;
 import com.bankapplication.entity.Customer;
 import com.bankapplication.entity.Transaction;
-import com.bankapplication.exception.BankException;
+
 import com.bankapplication.repository.AccountRepository;
 import com.bankapplication.repository.BankRepository;
 import com.bankapplication.repository.CustomerRepository;
 import com.bankapplication.repository.TransactionRepository;
 import com.bankapplication.service.AccountService;
+import com.commonexception.exception.BankException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -52,8 +53,6 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public String addAccount(AccountDto accountDto) {
-
-
         String random;
         Optional<Account> byAccountNumber1;
         do {
@@ -66,6 +65,9 @@ public class AccountServiceImpl implements AccountService {
         Optional<Customer> customer = customerRepository.findById(accountDto.getCustomerId());
         Optional<Bank> bank = bankRepository.findById(accountDto.getBankId());
         Bank ifsc = bankRepository.findByIfscCode(accountDto.getIfscCode());
+        if (Objects.isNull(ifsc)){
+          throw  new BankException("No bank found for this given ifsc code"+accountDto.getIfscCode(),HttpStatus.NOT_FOUND);
+        }
         if (account.getAccountNumber().length() != 14) {
             throw new BankException("The Account Number Must be 14 digit", HttpStatus.BAD_REQUEST);
         }
@@ -81,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
             log.error("Customer Does  not Exist with id ::{}", accountDto.getCustomerId());
             throw new BankException("Customer Does  not Exist with id :: " + accountDto.getCustomerId(), HttpStatus.NOT_FOUND);
         }
-        Account byAccountNumber = accountRepository.findByAccountNumber(account.getAccountNumber()).orElseThrow(() -> new BankException("Account number is not unique", HttpStatus.BAD_REQUEST));
+      //  Account byAccountNumber = accountRepository.findByAccountNumber(account.getAccountNumber()).orElseThrow(() -> new BankException("Account number is not unique", HttpStatus.BAD_REQUEST));
         if (account.getBank() == null) {
             throw new BankException("Bank is not present for the given bankId", HttpStatus.BAD_REQUEST);
         }
@@ -103,6 +105,7 @@ public class AccountServiceImpl implements AccountService {
             throw new BankException(String.format("Minimum balance to open current account is %s", AccountBalance.CURRENT.getBalance()), HttpStatus.BAD_REQUEST);
         }
         account.setBlocked(false);
+        account.setIfscCode(null);
         accountRepository.save(account);
         log.debug("Account Saves Successfully");
         return "Done New Account";
@@ -153,7 +156,7 @@ public class AccountServiceImpl implements AccountService {
             log.debug("Processing interest for account :: " + account.getAccountId());
             Transaction transaction = new Transaction();
             double amount = account.getAmount();
-            double interest = amount * AccountBalance.Interest.getBalance() / AccountBalance.Total.getBalance();
+            double interest = amount * AccountBalance.INTEREST.getBalance() / AccountBalance.TOTAL.getBalance();
             double totalAmount = (interest) + amount;
             account.setAmount(totalAmount);
             accountRepository.save(account);

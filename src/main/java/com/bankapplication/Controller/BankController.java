@@ -3,7 +3,6 @@ package com.bankapplication.Controller;
 import com.bankapplication.constantUrl.Url;
 import com.bankapplication.dto.AccountDto;
 import com.bankapplication.dto.BankDto;
-import com.bankapplication.dto.CustomerDto;
 import com.bankapplication.service.BankService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +39,7 @@ public class BankController {
         return ResponseEntity.ok(bankService.findAll());
     }
 
-    @GetMapping(Url.Id)
+    @GetMapping(Url.ID)
     public ResponseEntity<BankDto> findBankById(@PathVariable Integer id) {
         return ResponseEntity.ok(bankService.findById(id));
     }
@@ -48,7 +47,7 @@ public class BankController {
     public ResponseEntity<List<BankDto>> search(@PathVariable String content){
         return ResponseEntity.ok(bankService.search(content));
     }
-    @DeleteMapping(Url.Id)
+    @DeleteMapping(Url.ID)
     public ResponseEntity<String> deleteBank(@PathVariable Long id){
         return ResponseEntity.ok(bankService.deleteBank(id));
     }
@@ -57,7 +56,7 @@ public class BankController {
         String s = bankService.updateCustomer(bankDto);
         return new ResponseEntity<String>(s, HttpStatus.OK);
     }
-    @GetMapping(Url.BANK+Url.Id)
+    @GetMapping(Url.BANK+Url.ID)
     public ResponseEntity<List<AccountDto>> getAccountFormBankId(@PathVariable("id") long id) {
         return ResponseEntity.ok(bankService.getAccountFormBankId(id));
     }

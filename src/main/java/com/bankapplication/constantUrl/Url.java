@@ -2,7 +2,7 @@ package com.bankapplication.constantUrl;
 
 public class Url {
     public static  final String CUSTOMER="/customer";
-    public static  final String Id="/{id}";
+    public static  final String ID ="/{id}";
     public static  final String ACCOUNT="/account";
     public static  final String GET_BALANCE="/get-balance/{account-number}";
     public static  final String UPDATE="/update";
